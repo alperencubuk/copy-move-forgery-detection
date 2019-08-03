@@ -2,13 +2,13 @@ import cv2
 import numpy as np
 
 quantization = 16
-tsimilarity = 5 #euclid distance similarity threshhold
-tdistance = 20 #euclid distance between pixels threshold
-vector_limit = 20 #shift vector elimination limit
+tsimilarity = 5 # euclid distance similarity threshhold
+tdistance = 20 # euclid distance between pixels threshold
+vector_limit = 20 # shift vector elimination limit
 block_counter = 0
 block_size = 8
-image = cv2.imread('forged2.png')
-mask = cv2.imread('forged2_mask.png')
+image = cv2.imread('forged1.png')
+mask = cv2.imread('forged1_mask.png')
 mask_gray = cv2.cvtColor(mask, cv2.COLOR_RGB2GRAY)
 gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
 temp = []
@@ -30,7 +30,7 @@ for i in range(0, row):
         imf = np.float32(blocks) / 255.0  # float conversion/scale
         dst = cv2.dct(imf)  # the dct
         blocks = np.uint8(np.float32(dst) * 255.0 ) # convert back
-        #zigzag scan
+        # zigzag scan
         solution = [[] for k in range(block_size + block_size - 1)]
         for k in range(block_size):
             for l in range(block_size):
@@ -95,15 +95,12 @@ sim_array = np.array(sim_array)
 delete_vec = []
 vector_counter = 0
 for i in range(0, sim_array.shape[0]):
-    temp = [sim_array[i][4], sim_array[i][5]]
-    check = all(item in delete_vec for item in [temp])
-    if not check:
-        for j in range(1, sim_array.shape[0]):
-            if sim_array[i][4] == sim_array[j][4] and sim_array[i][5] == sim_array[j][5]:
-                vector_counter += 1
-        if vector_counter < vector_limit:
-            delete_vec.append(sim_array[i])
-        vector_counter = 0
+    for j in range(1, sim_array.shape[0]):
+        if sim_array[i][4] == sim_array[j][4] and sim_array[i][5] == sim_array[j][5]:
+            vector_counter += 1
+    if vector_counter < vector_limit:
+        delete_vec.append(sim_array[i])
+    vector_counter = 0
 
 delete_vec = np.array(delete_vec)
 delete_vec = delete_vec[~np.all(delete_vec == 0, axis=1)]
