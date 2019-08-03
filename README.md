@@ -6,7 +6,7 @@ DCT-based detection of copy-move forgery in images.
 
 ### Requirements:
 
-- Python3 (3.6.8 Recommended)
+- Python3 (3.7.4 Recommended)
 - OpenCV (pip install opencv-python)
   
 ### How to Run:
